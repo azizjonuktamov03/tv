@@ -3,69 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>O'zbek TV - Onlayn Pleyer</title>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <title>Setanta Sports - Pleyer</title>
     <style>
-        body { font-family: sans-serif; background: #121212; color: white; text-align: center; margin: 0; padding: 20px; }
-        .container { max-width: 800px; margin: auto; }
-        video { width: 100%; border: 2px solid #333; border-radius: 10px; background: black; box-shadow: 0 0 15px rgba(0,0,0,0.5); }
-        .channels { margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
-        button { background: #333; color: white; border: 1px solid #555; padding: 12px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: 0.3s; }
-        button:hover { background: #555; }
-        button.active { background: #e50914; border-color: #e50914; font-weight: bold; }
+        body { background: #121212; color: white; text-align: center; font-family: sans-serif; margin: 0; padding: 20px; }
+        .iframe-container { max-width: 800px; margin: auto; border: 2px solid #333; border-radius: 10px; overflow: hidden; }
+        iframe { width: 100%; height: 450px; border: none; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>O'zbek TV - Test Platforma</h2>
-        
-        <video id="tv-player" controls autoplay muted></video>
+    <h2>Setanta Sports 2</h2>
+    
+    <div class="iframe-container">
+        <!-- Iframe aynan mana shu yerda -->
+        <iframe src="https://livep2p.top/stream2/setanta2.php" allowfullscreen></iframe>
+    </div>
 
-        <div class="channels">
-            <!-- Test uchun aniq ishlaydigan xalqaro kanal -->
-            <button onclick="changeChannel('https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', this)" class="active">
-                Ishlaydigan Test Kanal
-            </button>
-            <button onclick="changeChannel('https://live.uzreport.news/uzreport/uzreport/playlist.m3u8', this)">
-                Uzreport TV (CORS bo'lishi mumkin)
-            </button>
-            <button onclick="changeChannel('https://live.mtrk.uz/hls/sport.m3u8', this)">
-                Sport TV (CORS himoyalangan)
-            </button>
-        </div>
-    </div> <!-- MANA SHU YOPILUVCHI TEG TUSHIB QOLGAN EDI -->
-
-    <script>
-        var video = document.getElementById('tv-player');
-        var hls = null;
-
-        function loadStream(url) {
-            if (hls) { hls.destroy(); }
-
-            if (Hls.isSupported()) {
-                hls = new Hls();
-                hls.loadSource(url);
-                hls.attachMedia(video);
-                hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                    video.play();
-                });
-            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                video.src = url;
-                video.addEventListener('loadedmetadata', function() {
-                    video.play();
-                });
-            }
-        }
-
-        function changeChannel(url, btn) {
-            let buttons = document.querySelectorAll('.channels button');
-            buttons.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            loadStream(url);
-        }
-
-        // Dastlabki ishlaydigan kanal yuklanadi
-        loadStream('https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8');
-    </script>
 </body>
 </html>
