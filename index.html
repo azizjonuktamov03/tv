@@ -21,19 +21,19 @@
         
         <video id="tv-player" controls autoplay muted></video>
 
-      <div class="channels">
-    <button onclick="changeChannel('https://live.uzreport.news/uzreport/uzreport/playlist.m3u8', this)" class="active">
-        Uzreport TV
-    </button>
-
-    <button onclick="changeChannel('https://live.mtrk.uz/hls/ozbekiston24.m3u8', this)">
-        O'zbekiston 24
-    </button>
-
-    <button onclick="changeChannel('https://live.mtrk.uz/hls/sport.m3u8', this)">
-        Sport TV
-    </button>
-</div>
+        <div class="channels">
+            <!-- Test uchun aniq ishlaydigan xalqaro kanal -->
+            <button onclick="changeChannel('https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', this)" class="active">
+                Ishlaydigan Test Kanal
+            </button>
+            <button onclick="changeChannel('https://live.uzreport.news/uzreport/uzreport/playlist.m3u8', this)">
+                Uzreport TV (CORS bo'lishi mumkin)
+            </button>
+            <button onclick="changeChannel('https://live.mtrk.uz/hls/sport.m3u8', this)">
+                Sport TV (CORS himoyalangan)
+            </button>
+        </div>
+    </div> <!-- MANA SHU YOPILUVCHI TEG TUSHIB QOLGAN EDI -->
 
     <script>
         var video = document.getElementById('tv-player');
@@ -64,6 +64,7 @@
             loadStream(url);
         }
 
+        // Dastlabki ishlaydigan kanal yuklanadi
         loadStream('https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8');
     </script>
 </body>
