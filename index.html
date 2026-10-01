@@ -21,16 +21,19 @@
         
         <video id="tv-player" controls autoplay muted></video>
 
-        <div class="channels">
-            <button onclick="changeChannel('https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', this)" class="active">
-                Xalqaro Test (Kino)
-            </button>
-            
-            <button onclick="changeChannel('https://tv.uzni.net/live/navo.m3u8', this)">
-                Test Kanal (Misol uchun)
-            </button>
-        </div>
-    </div>
+      <div class="channels">
+    <button onclick="changeChannel('https://live.uzreport.news/uzreport/uzreport/playlist.m3u8', this)" class="active">
+        Uzreport TV
+    </button>
+
+    <button onclick="changeChannel('https://live.mtrk.uz/hls/ozbekiston24.m3u8', this)">
+        O'zbekiston 24
+    </button>
+
+    <button onclick="changeChannel('https://live.mtrk.uz/hls/sport.m3u8', this)">
+        Sport TV
+    </button>
+</div>
 
     <script>
         var video = document.getElementById('tv-player');
