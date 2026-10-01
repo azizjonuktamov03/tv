@@ -3,20 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Setanta Sports - Pleyer</title>
+    <title>O'zbek TV va Sport - Onlayn Pleyer</title>
+    <!-- HLS.js kutubxonasi (m3u8 uchun) -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
-        body { background: #121212; color: white; text-align: center; font-family: sans-serif; margin: 0; padding: 20px; }
-        .iframe-container { max-width: 800px; margin: auto; border: 2px solid #333; border-radius: 10px; overflow: hidden; }
-        iframe { width: 100%; height: 450px; border: none; }
+        body { font-family: sans-serif; background: #121212; color: white; text-align: center; margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: auto; }
+        
+        /* Pleyer uchun maxsus quti */
+        .player-wrapper { 
+            border: 2px solid #333; 
+            border-radius: 10px; 
+            background: black; 
+            box-shadow: 0 0 15px rgba(0,0,0,0.5); 
+            overflow: hidden; 
+            height: 450px; /* Pleyer balandligi */
+            position: relative; 
+        }
+        
+        video, iframe { 
+            width: 100%; 
+            height: 100%; 
+            border: none; 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+        }
+        
+        /* Boshida iframe yashiringan bo'ladi */
+        iframe { display: none; } 
+
+        .channels { margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+        button { background: #333; color: white; border: 1px solid #555; padding: 12px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: 0.3s; }
+        button:hover { background: #555; }
+        button.active { background: #e50914; border-color: #e50914; font-weight: bold; }
     </style>
 </head>
 <body>
-    <h2>Setanta Sports 2</h2>
-    
-    <div class="iframe-container">
-        <!-- Iframe aynan mana shu yerda -->
-        <iframe src="https://livep2p.top/stream2/setanta2.php" allowfullscreen></iframe>
+    <div class="container">
+        <h2>O'zbek TV va Sport Platformasi</h2>
+        
+        <!-- Pleyerlar joylashgan quti -->
+        <div class="player-wrapper">
+            <!-- M3U8 kanallar uchun pleyer -->
+            <video id="tv-player" controls autoplay muted></video>
+            
+            <!-- Setanta kabi tayyor saytlar uchun pleyer -->
+            <iframe id="iframe-player" src="" allowfullscreen></iframe>
+        </div>
+
+        <!-- Kanal tanlash tugmalari -->
+        <div class="channels">
+            <!-- E'tibor bering: endi tugmalarga 'm3u8' yoki 'iframe' ekanligi ham yozilgan -->
+            <button onclick="changeChannel('https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', 'm3u8', this)" class="active">
+                Test Kanal
+            </button>
+            
+            <button onclick="changeChannel('https://live.uzreport.news/uzreport/uzreport/playlist.m3u8', 'm3u8', this)">
+                Uzreport TV
+            </button>
+
+            <!-- Siz topgan Setanta Sports ssilkasi -->
+            <button onclick="changeChannel('https://livep2p.top/stream2/setanta2.php', 'iframe', this)">
+                Setanta Sports 2
+            </button>
+        </div>
     </div>
 
+    <script>
+        var video = document.getElementById('tv-player');
+        var iframe = document.getElementById('iframe-player');
+        var hls = null;
+
+        // M3U8 ssilkalarni yuklash funksiyasi
+        function loadM3u8(url) {
+            if (hls) { hls.destroy(); }
+            if (Hls.isSupported()) {
+                hls = new Hls();
+                hls.loadSource(url);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, function() { video.play(); });
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = url;
+                video.addEventListener('loadedmetadata', function() { video.play(); });
+            }
+        }
+
+        // Kanalni o'zgartirish funksiyasi
+        function changeChannel(url, type, btn) {
+            // Tugma ranglarini yangilash
+            let buttons = document.querySelectorAll('.channels button');
+            buttons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            if (type === 'm3u8') {
+                // Agar kanal m3u8 bo'lsa: iframe'ni yashiramiz, videoni ko'rsatamiz
+                iframe.style.display = 'none';
+                iframe.src = ''; // Orqa fonda ovozi eshitilib qolmasligi uchun iframe ssilkasini tozalaymiz
+                video.style.display = 'block';
+                loadM3u8(url);
+            } else if (type === 'iframe') {
+                // Agar kanal iframe bo'lsa: videoni to'xtatamiz va yashiramiz, iframe'ni ko'rsatamiz
+                if (hls) { hls.destroy(); }
+                video.pause();
+                video.style.display = 'none';
+                iframe.style.display = 'block';
+                iframe.src = url;
+            }
+        }
+
+        // Sayt ochilganda birinchi bo'lib m3u8 formatdagi Test kanal yuklanadi
+        loadM3u8('https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8');
+    </script>
 </body>
 </html>
