@@ -3,69 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>O'zbek TV va Sport - Onlayn Pleyer</title>
-    <!-- HLS.js kutubxonasi (m3u8 uchun) -->
+    <title>O'zbek TV Platformasi</title>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
-        body { font-family: sans-serif; background: #121212; color: white; text-align: center; margin: 0; padding: 20px; }
-        .container { max-width: 800px; margin: auto; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f0f0f; color: white; text-align: center; margin: 0; padding: 20px; }
+        .header { margin-bottom: 20px; }
+        .header h1 { color: #e50914; margin: 0; font-size: 32px; }
+        .header p { color: #aaa; font-size: 14px; }
         
-        /* Pleyer uchun maxsus quti */
+        .container { max-width: 900px; margin: auto; }
+        
         .player-wrapper { 
-            border: 2px solid #333; 
-            border-radius: 10px; 
+            border: 2px solid #222; 
+            border-radius: 12px; 
             background: black; 
-            box-shadow: 0 0 15px rgba(0,0,0,0.5); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8); 
             overflow: hidden; 
-            height: 450px; /* Pleyer balandligi */
+            aspect-ratio: 16 / 9; /* Pleyer avtomatik to'g'ri hajmda bo'ladi */
             position: relative; 
+            margin-bottom: 20px;
         }
         
-        video, iframe { 
-            width: 100%; 
-            height: 100%; 
-            border: none; 
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-        }
-        
-        /* Boshida iframe yashiringan bo'ladi */
+        video, iframe { width: 100%; height: 100%; border: none; position: absolute; top: 0; left: 0; }
         iframe { display: none; } 
 
-        .channels { margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
-        button { background: #333; color: white; border: 1px solid #555; padding: 12px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: 0.3s; }
-        button:hover { background: #555; }
+        .channels-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
+            gap: 15px; 
+        }
+        
+        button { 
+            background: #222; color: white; border: 1px solid #444; 
+            padding: 15px 10px; font-size: 15px; border-radius: 8px; 
+            cursor: pointer; transition: all 0.3s ease; 
+            font-weight: 500;
+        }
+        button:hover { background: #444; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         button.active { background: #e50914; border-color: #e50914; font-weight: bold; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>O'zbek TV va Sport Platformasi</h2>
+        <div class="header">
+            <h1>📺 O'zbek va Xalqaro TV</h1>
+            <p>Onlayn telekanallar namoyishi (Test rejimida)</p>
+        </div>
         
-        <!-- Pleyerlar joylashgan quti -->
+        <!-- Video Pleyer -->
         <div class="player-wrapper">
-            <!-- M3U8 kanallar uchun pleyer -->
             <video id="tv-player" controls autoplay muted></video>
-            
-            <!-- Setanta kabi tayyor saytlar uchun pleyer -->
             <iframe id="iframe-player" src="" allowfullscreen></iframe>
         </div>
 
-        <!-- Kanal tanlash tugmalari -->
-        <div class="channels">
-            <!-- E'tibor bering: endi tugmalarga 'm3u8' yoki 'iframe' ekanligi ham yozilgan -->
+        <!-- Kanallar ro'yxati -->
+        <div class="channels-grid">
+            <!-- 100% Ishlaydigan test va xalqaro kanallar -->
             <button onclick="changeChannel('https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', 'm3u8', this)" class="active">
-                Test Kanal
+                🎬 Kino (Test)
+            </button>
+            <button onclick="changeChannel('https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8', 'm3u8', this)">
+                🏎 Red Bull TV
             </button>
             
+            <!-- O'zbek kanallari (m3u8 ssilkalar) -->
             <button onclick="changeChannel('https://live.uzreport.news/uzreport/uzreport/playlist.m3u8', 'm3u8', this)">
-                Uzreport TV
+                📊 Uzreport TV
             </button>
-
-            <!-- Siz topgan Setanta Sports ssilkasi -->
-            <button onclick="changeChannel('https://livep2p.top/stream2/setanta2.php', 'iframe', this)">
-                Setanta Sports 2
+            <button onclick="changeChannel('https://live.mtrk.uz/hls/navo.m3u8', 'm3u8', this)">
+                🎵 Navo TV
+            </button>
+            <button onclick="changeChannel('https://live.mtrk.uz/hls/ozbekiston24.m3u8', 'm3u8', this)">
+                🌍 O'zbekiston 24
+            </button>
+            <button onclick="changeChannel('https://live.mtrk.uz/hls/sport.m3u8', 'm3u8', this)">
+                ⚽️️ Sport TV
             </button>
         </div>
     </div>
@@ -75,7 +87,6 @@
         var iframe = document.getElementById('iframe-player');
         var hls = null;
 
-        // M3U8 ssilkalarni yuklash funksiyasi
         function loadM3u8(url) {
             if (hls) { hls.destroy(); }
             if (Hls.isSupported()) {
@@ -89,21 +100,17 @@
             }
         }
 
-        // Kanalni o'zgartirish funksiyasi
         function changeChannel(url, type, btn) {
-            // Tugma ranglarini yangilash
-            let buttons = document.querySelectorAll('.channels button');
+            let buttons = document.querySelectorAll('.channels-grid button');
             buttons.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
 
             if (type === 'm3u8') {
-                // Agar kanal m3u8 bo'lsa: iframe'ni yashiramiz, videoni ko'rsatamiz
                 iframe.style.display = 'none';
-                iframe.src = ''; // Orqa fonda ovozi eshitilib qolmasligi uchun iframe ssilkasini tozalaymiz
+                iframe.src = ''; 
                 video.style.display = 'block';
                 loadM3u8(url);
             } else if (type === 'iframe') {
-                // Agar kanal iframe bo'lsa: videoni to'xtatamiz va yashiramiz, iframe'ni ko'rsatamiz
                 if (hls) { hls.destroy(); }
                 video.pause();
                 video.style.display = 'none';
@@ -112,7 +119,7 @@
             }
         }
 
-        // Sayt ochilganda birinchi bo'lib m3u8 formatdagi Test kanal yuklanadi
+        // Birinchi bo'lib Test kanal ishga tushadi
         loadM3u8('https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8');
     </script>
 </body>
